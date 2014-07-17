@@ -39,3 +39,4 @@ Building Your Own
 
 If you are already using a custom cache backend, a mixin is provided that
 should add this capability: ``django_ft_cache.FaultTolerantCacheMixin``.
+
