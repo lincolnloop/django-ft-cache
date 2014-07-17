@@ -1,0 +1,4 @@
+include HISTORY.rst
+include LICENSE
+include README.rst
+include django_ft_cache.py
