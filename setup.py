@@ -9,7 +9,7 @@ try:
 except ImportError:
     from distutils.core import setup, Command
 
-version = '0.1.0'
+version = '0.2.0'
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
@@ -17,6 +17,7 @@ if sys.argv[-1] == 'publish':
     print("  git tag -a %s -m 'version %s'" % (version, version))
     print("  git push --tags")
     sys.exit()
+
 
 class PyTest(Command):
     user_options = []
@@ -43,7 +44,7 @@ setup(
     author_email='pete@lincolnloop.com',
     url='https://github.com/lincolnloop/django-ft-cache',
     py_modules=['django_ft_cache'],
-    cmdclass = {'test': PyTest},
+    cmdclass={'test': PyTest},
     include_package_data=True,
     install_requires=[
     ],
@@ -58,5 +59,7 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
     ],
 )

@@ -7,3 +7,8 @@ History
 ++++++++++++++++++
 
 * Initial release
+
+0.2.0 (2016-03-01)
+++++++++++++++++++
+
+* Updated for Python 3.4
