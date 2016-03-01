@@ -30,7 +30,7 @@ try:
             },
             'loggers': {
                 'django_ft_cache': {
-                    'handlers': ['console'],
+                    'handlers': [], # for debugging use ['console'],
                 },
             },
         }
