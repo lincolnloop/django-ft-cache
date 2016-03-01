@@ -9,7 +9,7 @@ try:
 except ImportError:
     from distutils.core import setup, Command
 
-version = '0.1.0'
+version = '1.0-dev'
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
@@ -46,6 +46,7 @@ setup(
     cmdclass = {'test': PyTest},
     include_package_data=True,
     install_requires=[
+        "pylibmc>=1.3.0"
     ],
     license="BSD",
     keywords='django-ft-cache',

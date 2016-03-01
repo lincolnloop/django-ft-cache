@@ -1,12 +1,21 @@
-from itertools import repeat
 from django.test import TestCase
-from django.core.cache import get_cache
+
+
+def _get_cache(backend):
+    try:
+        # 1.9+
+        from django.core.cache import caches
+    except ImportError:
+        # <1.9
+        from django.core.cache import get_cache
+        return get_cache(backend)
+    return caches[backend]
 
 
 class BaseCacheTestCase(TestCase):
 
     def setUp(self):
-        self.cache = get_cache(self.cache_name)
+        self.cache = _get_cache(self.cache_name)
 
     def key(self, key):
         return u'ft-cache-test:{cache}:{key}'.format(key=key,

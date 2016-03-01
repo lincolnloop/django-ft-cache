@@ -2,15 +2,14 @@
 
 language: python
 
+sudo: false
+
 python:
-  - "2.7"
-  - "2.6"
+  - "3.5"
 
 services:
   - memcached
 
-# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: pip install -r requirements-test.txt
+install: pip install tox
 
-# command to run tests using coverage, e.g. python setup.py test
-script: python runtests.py
+script: tox
