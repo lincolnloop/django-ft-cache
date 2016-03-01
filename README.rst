@@ -20,7 +20,7 @@ Installation
 
 ::
 
-    pip install django-ft-cache
+    pip install pylibmc django-ft-cache
 
 Replace the existing pylibmc cache backend in your settings with
 ``'django_ft_cache.FaultTolerantPyLibMCCache'``. For example:

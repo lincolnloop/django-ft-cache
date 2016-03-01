@@ -1,3 +1,4 @@
+import logging
 import sys
 
 try:
@@ -18,21 +19,6 @@ try:
                 'BACKEND': 'django_ft_cache.FaultTolerantPyLibMCCache',
                 'LOCATION': ['127.0.0.1:999999'],
             }
-        },
-        LOGGING={
-            'version': 1,
-            'disable_existing_loggers': False,
-            'handlers': {
-                'console': {
-                    'level': 'DEBUG',
-                    'class': 'logging.StreamHandler',
-                },
-            },
-            'loggers': {
-                'django_ft_cache': {
-                    'handlers': [], # for debugging use ['console'],
-                },
-            },
         }
     )
 
@@ -45,10 +31,13 @@ try:
         setup()
     from django.test.runner import DiscoverRunner
 except ImportError:
-    raise ImportError("To fix this error, run: pip install -r requirements-test.txt")
+    raise ImportError("To fix this error, run: pip install Django")
 
 
 def run_tests(*test_args):
+
+    # Disable logging for tests
+    logging.disable(logging.ERROR)
 
     # Run tests
     test_runner = DiscoverRunner(verbosity=1)

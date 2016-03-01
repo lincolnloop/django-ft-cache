@@ -9,7 +9,7 @@ try:
 except ImportError:
     from distutils.core import setup, Command
 
-version = '1.0-dev'
+version = '0.9.dev0'
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
@@ -27,7 +27,7 @@ class PyTest(Command):
         pass
 
     def run(self):
-        import sys,subprocess
+        import subprocess
         errno = subprocess.call([sys.executable, 'runtests.py'])
         raise SystemExit(errno)
 
@@ -45,19 +45,22 @@ setup(
     py_modules=['django_ft_cache'],
     cmdclass = {'test': PyTest},
     include_package_data=True,
-    install_requires=[
+    extras_require={'test': [
+        "Django",
         "pylibmc>=1.3.0"
-    ],
+    ]},
     license="BSD",
     keywords='django-ft-cache',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Framework :: Django',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
     ],
 )
