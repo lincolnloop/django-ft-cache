@@ -1,6 +1,7 @@
 import logging
 from functools import wraps
 
+from django.utils.functional import cached_property
 from django.core.cache.backends.memcached import PyLibMCCache
 
 logger = logging.getLogger(__name__)
@@ -27,17 +28,17 @@ class FaultTolerantCacheMixin(object):
     methods_to_patch = ('get', 'set', 'incr', 'decr', 'delete',
                         'get_multi', 'set_multi', 'delete_multi')
 
-    @property
+    @cached_property
     def _cache(self):
-        """
-        Implements transparent thread-safe access to a memcached client.
-        """
-        if getattr(self, '_client', None) is None:
-            self._client = self._lib.Client(self._servers)
-            for name in self.methods_to_patch:
-                method = fault_tolerant_wrapper(getattr(self._client, name))
-                setattr(self._client, name, method)
-        return self._client
+        # existing Django code
+        client = self._lib.Client(self._servers)
+        if self._options:
+            client.behaviors = self._options
+        # overrides
+        for name in self.methods_to_patch:
+                method = fault_tolerant_wrapper(getattr(client, name))
+                setattr(client, name, method)
+        return client
 
 
 class FaultTolerantPyLibMCCache(FaultTolerantCacheMixin, PyLibMCCache):
