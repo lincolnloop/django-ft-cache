@@ -1,4 +1,9 @@
+import datetime
+import time
+
 from django.test import TestCase
+from django.conf import settings
+from freezegun import freeze_time
 
 
 def _get_cache(backend):
@@ -21,6 +26,10 @@ class BaseCacheTestCase(TestCase):
         return u'ft-cache-test:{cache}:{key}'.format(key=key,
                                                      cache=self.cache_name)
 
+    def seconds_in_the_past(self, seconds):
+        return freeze_time(datetime.datetime.utcnow() -
+                           datetime.timedelta(seconds=seconds))
+
 
 class WorkingCacheTests(BaseCacheTestCase):
     cache_name = 'default'
@@ -40,6 +49,7 @@ class WorkingCacheTests(BaseCacheTestCase):
         self.cache.set(key, blob)
         self.assertEqual(self.cache.get(key), None)
 
+
 class BadCacheTests(BaseCacheTestCase):
     cache_name = 'faulty'
 
@@ -50,3 +60,77 @@ class BadCacheTests(BaseCacheTestCase):
         self.cache.delete(key)
         self.cache.set(key, val)
         self.assertEqual(self.cache.get(key), None)
+
+
+class MintCacheTests(BaseCacheTestCase):
+    cache_name = 'mint'
+    ttl = 20
+
+    def test_still_in_cache(self):
+        key = self.key('still-in-cache')
+        val = 'value'
+        with self.seconds_in_the_past(self.ttl + 5):
+            self.cache.set(key, val, self.ttl)
+        ret_val = self.cache.get(key)
+        # cache miss
+        self.assertIsNone(ret_val)
+        ret_val = self.cache.get(key)
+        # herd hit
+        self.assertEqual(ret_val, val)
+
+    def test_get(self):
+        key = self.key('get')
+        val = 'value'
+        self.cache.set(key, val, self.ttl)
+        self.assertEqual(self.cache.get(key), val)
+
+    def test_herd_expired(self):
+        key = self.key('expired')
+        val = 'value'
+        with self.seconds_in_the_past(self.ttl + 5):
+            self.cache.set(key, val, self.ttl)
+        ret_val = self.cache.get(key)
+        # cache miss
+        self.assertIsNone(ret_val)
+        # TODO: figure out how to pass herd timeout without sleeping
+        time.sleep(settings.CACHE_HERD_TIMEOUT + 0.1)
+        ret_val = self.cache.get(key)
+        self.assertIsNone(ret_val)
+
+    def test_not_expired(self):
+        key = self.key('not-expired')
+        val = 'no'
+        with self.seconds_in_the_past(self.ttl / 2):
+            self.cache.set(key, val, self.ttl)
+        ret_val = self.cache.get(key)
+        self.assertEqual(ret_val, val)
+
+    def test_get_many(self):
+        data = [
+            (self.key('get-many-a'), 'b'),
+            (self.key('get-many-c'), 'd'),
+            (self.key('get-many-e'), 'f'),
+        ]
+        with self.seconds_in_the_past(self.ttl + 5):
+            self.cache.set(*data[0], timeout=1)
+            self.cache.set(*data[1], timeout=self.ttl)
+            self.cache.set(*data[2], timeout=self.ttl * 10)
+        results = self.cache.get_many([d[0] for d in data])
+        self.assertIsNone(results[data[0][0]])
+        self.assertIsNone(results[data[1][0]])
+        self.assertIn(data[2], results.items())
+
+    def test_set_many(self):
+        data = [
+            (self.key('set-many-a'), 'b'),
+            (self.key('set-many-c'), 'd'),
+            (self.key('set-many-e'), 'f'),
+        ]
+        with self.seconds_in_the_past(self.ttl + 5):
+            self.cache.set_many(dict(data), self.ttl)
+        results = self.cache.get_many([d[0] for d in data])
+        for v in results.values():
+            self.assertIsNone(v)
+        results = self.cache.get_many([d[0] for d in data])
+        for k, v in results.items():
+            self.assertEqual(dict(data)[k], v)

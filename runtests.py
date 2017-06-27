@@ -5,6 +5,7 @@ try:
     from django.conf import settings
 
     settings.configure(
+        CACHE_HERD_TIMEOUT=1,
         DATABASES={
             "default": {
                 "ENGINE": "django.db.backends.sqlite3",
@@ -18,6 +19,10 @@ try:
             'faulty': {
                 'BACKEND': 'django_ft_cache.FaultTolerantPyLibMCCache',
                 'LOCATION': ['127.0.0.1:999999'],
+            },
+            'mint': {
+                'BACKEND': 'django_ft_cache.PyLibMCMintCache',
+                'LOCATION': ['127.0.0.1:11211'],
             }
         }
     )
