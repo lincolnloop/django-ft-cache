@@ -20,6 +20,6 @@ matrix:
 services:
   - memcached
 
-install: pip install tox
+install: pip install tox tox-travis
 
 script: tox
