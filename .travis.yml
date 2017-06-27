@@ -5,11 +5,21 @@ language: python
 sudo: false
 
 python:
+  - "2.7"
+  - "3.4"
   - "3.5"
+
+matrix:
+    fast_finish: true
+    include:
+      - python: "3.6"
+        env: DJANGO=1.11
+      - python: "3.3"
+        env: DJANGO=1.8
 
 services:
   - memcached
 
-install: pip install tox
+install: pip install tox tox-travis
 
 script: tox
