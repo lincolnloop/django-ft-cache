@@ -3,6 +3,12 @@
 History
 -------
 
+1.0.0 (2017-06-27)
+++++++++++++++++++
+
+* Tests against Django 1.11 and Python 3.6
+* Bump to stable/production
+
 0.9.0 (2016-02-01)
 ++++++++++++++++++
 

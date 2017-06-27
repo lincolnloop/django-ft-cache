@@ -9,7 +9,7 @@ try:
 except ImportError:
     from distutils.core import setup, Command
 
-version = '0.9.0'
+version = '1.0.0'
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
@@ -52,7 +52,7 @@ setup(
     license="BSD",
     keywords='django-ft-cache',
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Framework :: Django',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
