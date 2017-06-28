@@ -42,7 +42,6 @@ class MintCacheMixin(object):
         timeout_time = timeout + int(time.time())
         return MARKER, value, timeout_time
 
-
     def _unpack_value(self, value, default=None):
         """
         Unpacks a value and returns a tuple whose first element is the value,
@@ -134,4 +133,10 @@ class FaultTolerantPyLibMCCache(FaultTolerantCacheMixin, PyLibMCCache):
 
 
 class PyLibMCMintCache(MintCacheMixin, PyLibMCCache):
+    pass
+
+
+class FaultTolerantPyLibMCMintCache(MintCacheMixin,
+                                    FaultTolerantCacheMixin,
+                                    PyLibMCCache):
     pass

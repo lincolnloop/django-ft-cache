@@ -23,7 +23,15 @@ try:
             'mint': {
                 'BACKEND': 'django_ft_cache.PyLibMCMintCache',
                 'LOCATION': ['127.0.0.1:11211'],
-            }
+            },
+            'ft-mint': {
+                'BACKEND': 'django_ft_cache.FaultTolerantPyLibMCMintCache',
+                'LOCATION': ['127.0.0.1:11211'],
+            },
+            'ft-mint-faulty': {
+                'BACKEND': 'django_ft_cache.FaultTolerantPyLibMCMintCache',
+                'LOCATION': ['127.0.0.1:999999'],
+            },
         }
     )
 

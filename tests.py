@@ -153,3 +153,15 @@ class MintCacheTests(BaseCacheTestCase):
         value = ('a', 'false', 'marker')
         self.cache.set(key, value, self.ttl, herd=False)
         self.assertEqual(self.cache.get(key), value)
+
+
+class FTMintWorkingCacheTests(WorkingCacheTests):
+    cache_name = 'ft-mint'
+
+
+class FTMintBadCacheTests(BadCacheTests):
+    cache_name = 'ft-mint-faulty'
+
+
+class FTMintCacheTests(MintCacheTests):
+    cache_name = 'ft-mint'
