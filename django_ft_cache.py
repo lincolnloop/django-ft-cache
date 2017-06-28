@@ -120,7 +120,7 @@ class MintCacheMixin(object):
         super(MintCacheMixin, self).set_many(data, timeout, version)
 
 
-class FaultTolerantCacheMixin(object):
+class FaultTolerantMemcacheMixin(object):
     """
     Wraps memcache client methods allowing them to fail
     without raising an exception.
@@ -130,14 +130,14 @@ class FaultTolerantCacheMixin(object):
 
     @cached_property
     def _cache(self):
-        client = super(FaultTolerantCacheMixin, self)._cache
+        client = super(FaultTolerantMemcacheMixin, self)._cache
         for name in self.methods_to_patch:
                 method = fault_tolerant_wrapper(getattr(client, name))
                 setattr(client, name, method)
         return client
 
 
-class FaultTolerantPyLibMCCache(FaultTolerantCacheMixin, PyLibMCCache):
+class FaultTolerantPyLibMCCache(FaultTolerantMemcacheMixin, PyLibMCCache):
     pass
 
 
@@ -146,6 +146,6 @@ class PyLibMCMintCache(MintCacheMixin, PyLibMCCache):
 
 
 class FaultTolerantPyLibMCMintCache(MintCacheMixin,
-                                    FaultTolerantCacheMixin,
+                                    FaultTolerantMemcacheMixin,
                                     PyLibMCCache):
     pass
