@@ -1,11 +1,15 @@
 import logging
 from functools import wraps
-
 import time
+
+import django
 from django.conf import settings
 from django.utils.functional import cached_property
-from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.core.cache.backends.memcached import PyLibMCCache
+try:
+    from django.core.cache.backends.base import DEFAULT_TIMEOUT
+except ImportError:
+    DEFAULT_TIMEOUT = 0
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +37,11 @@ MARKER = Marker()
 class MintCacheMixin(object):
     """Thundering herd mitigation"""
     herd_timeout = getattr(settings, 'CACHE_HERD_TIMEOUT', 60)
+
+    def __init__(self, *args, **kwargs):
+        super(MintCacheMixin, self).__init__(*args, **kwargs)
+        if django.VERSION < (1, 7):
+            self.get_backend_timeout = self._get_memcache_timeout
 
     def _pack_value(self, value, timeout):
         """
