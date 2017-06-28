@@ -1,0 +1,2 @@
+[report]
+include = django_ft_cache.py

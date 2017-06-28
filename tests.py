@@ -84,18 +84,31 @@ class MintCacheTests(BaseCacheTestCase):
         self.cache.set(key, val, self.ttl)
         self.assertEqual(self.cache.get(key), val)
 
+    def test_add(self):
+        key = self.key('add')
+        val = 'value'
+        self.cache.add(key, val, self.ttl)
+        self.assertEqual(self.cache.get(key), val)
+
     def test_herd_expired(self):
-        key = self.key('expired')
+        key_set = self.key('set-expired')
+        key_add = self.key('add-expired')
         val = 'value'
         with self.seconds_in_the_past(self.ttl + 5):
-            self.cache.set(key, val, self.ttl)
-        ret_val = self.cache.get(key)
-        # cache miss
-        self.assertIsNone(ret_val)
+            self.cache.set(key_set, val, self.ttl)
+            self.cache.add(key_add, val, self.ttl)
+        ret_val_set = self.cache.get(key_set)
+        ret_val_add = self.cache.get(key_add)
+        # Expect a cache miss
+        self.assertIsNone(ret_val_set)
+        self.assertIsNone(ret_val_add)
         # TODO: figure out how to pass herd timeout without sleeping
         time.sleep(settings.CACHE_HERD_TIMEOUT + 0.1)
-        ret_val = self.cache.get(key)
-        self.assertIsNone(ret_val)
+        ret_val_set = self.cache.get(key_set)
+        ret_val_add = self.cache.get(key_add)
+        # Expect herd timeout expired and cache miss
+        self.assertIsNone(ret_val_set)
+        self.assertIsNone(ret_val_add)
 
     def test_not_expired(self):
         key = self.key('not-expired')
@@ -134,3 +147,9 @@ class MintCacheTests(BaseCacheTestCase):
         results = self.cache.get_many([d[0] for d in data])
         for k, v in results.items():
             self.assertEqual(dict(data)[k], v)
+
+    def test_false_marker(self):
+        key = self.key('false-marker')
+        value = ('a', 'false', 'marker')
+        self.cache.set(key, value, self.ttl, herd=False)
+        self.assertEqual(self.cache.get(key), value)
