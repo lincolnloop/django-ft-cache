@@ -3,6 +3,11 @@
 History
 -------
 
+1.1.0
++++++
+
+* Adds new classes for cache stampede mitigation
+
 1.0.0 (2017-06-27)
 ++++++++++++++++++
 
