@@ -1,0 +1,4 @@
+[run]
+branch = true
+source =
+    django_ft_cache

@@ -47,7 +47,8 @@ setup(
     include_package_data=True,
     extras_require={'test': [
         "Django",
-        "pylibmc>=1.3.0"
+        "pylibmc>=1.3.0",
+        "freezegun==0.3.9",
     ]},
     license="BSD",
     keywords='django-ft-cache',
