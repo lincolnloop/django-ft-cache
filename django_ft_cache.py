@@ -117,7 +117,7 @@ class MintCacheMixin(object):
             data = {k: self._pack_value(v, original_timeout)
                     for k, v in data.items()}
 
-        super(MintCacheMixin, self).set_many(data, timeout, version)
+        return super(MintCacheMixin, self).set_many(data, timeout, version)
 
 
 class FaultTolerantMemcacheMixin(object):
