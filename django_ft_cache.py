@@ -15,7 +15,11 @@ def fault_tolerant_wrapper(f):
         except Exception as err:
             logger.error(u"cache.%s failed with args: %s", f.__name__, args)
             logger.exception(err)
-            result = None
+            if f.__name__ == 'set_multi':
+                # set_multi() returns a list of failed keys. Pretend that none have failed.
+                result = []
+            else:
+                result = None
         return result
     return wrapper
 
@@ -25,7 +29,7 @@ class FaultTolerantCacheMixin(object):
     Wraps memcache client methods allowing them to fail
     without raising an exception.
     """
-    methods_to_patch = ('get', 'set', 'incr', 'decr', 'delete',
+    methods_to_patch = ('add', 'get', 'set', 'incr', 'decr', 'delete',
                         'get_multi', 'set_multi', 'delete_multi')
 
     @cached_property
